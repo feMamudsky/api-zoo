@@ -1,3 +1,4 @@
+import { Animal } from "./Animal";
 class Mamifero extends Animal {
     private raca: string;
 
