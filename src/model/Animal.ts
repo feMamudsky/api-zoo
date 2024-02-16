@@ -1,40 +1,88 @@
 export class Animal {
-        // 🐾 Bem-vindo à classe Animal, onde todos os nossos amigos peludos, escamosos e emplumados se encontram!
-    
-        private nome: string; // 🏷️ O nome do animal, porque todos nós merecemos ser chamados pelo nosso nome!
-    
-        private idade: number; // 🎂 A idade do animal, porque até mesmo os mais jovens entre nós têm muita sabedoria para compartilhar!
-    
-        private genero: string; // ⚥ O gênero do animal, porque não importa se somos meninos, meninas ou qualquer coisa entre, somos todos iguais perante a natureza!
-    
-        constructor(nome: string, idade: number, genero: string) {
-            this.nome = nome; // 🎉 Ao criar um animal, atribuímos a ele um nome
-            this.idade = idade; // 🎉 Também damos uma idade, afinal, todos nós temos uma história para contar!
-            this.genero = genero; // 🎉 E não podemos esquecer o gênero, pois cada um de nós é único!
-        }
-    
-        public getNome(): string {
-            return this.nome; // 🤔 Retorna o nome do animal. Você já ouviu falar de um animal com um nome tão legal quanto o meu?
-        }
-    
-        public setNome(nome: string): void {
-            this.nome = nome; // 🏷️ Define um novo nome para o animal. Talvez agora eu seja conhecido como o animal mais famoso do zoológico!
-        }
-    
-        public getIdade(): number {
-            return this.idade; // 🤔 Retorna a idade do animal. Será que sou um jovem aventureiro ou um sábio ancião?
-        }
-    
-        public setIdade(idade: number): void {
-            this.idade = idade; // 🎂 Define uma nova idade para o animal. Agora estou um pouco mais experiente!
-        }
-    
-        public getGenero(): string {
-            return this.genero; // 🤔 Retorna o gênero do animal. Sou um menino, uma menina ou um mistério da natureza?
-        }
-    
-        public setGenero(genero: string): void {
-            this.genero = genero; // ⚥ Define um novo gênero para o animal. Agora sou oficialmente um representante do gênero mais incrível do reino animal!
-        }
+    private nome: string; // 🏷️ O nome do animal
+    private idade: number; // 🎂 A idade do animal
+    private genero: string; // ⚥ O gênero do animal
+
+    /**
+     * Cria uma nova instância de Animal.
+     * 
+     * @param nome O nome do animal.
+     * @param idade A idade do animal.
+     * @param genero O gênero do animal.
+     */
+    constructor(nome: string, idade: number, genero: string) {
+        this.nome = nome;
+        this.idade = idade;
+        this.genero = genero;
     }
-    
+
+    /**
+     * Método para que o animal emita um som.
+     */
+    public emitirSom(): void {
+        console.log("O animal emite um som.");
+    }
+
+    /**
+     * Método para que o animal se mova.
+     */
+    public mover(): void {
+        console.log("O animal está se movendo.");
+    }
+
+    // Getters e setters para os atributos nome, idade e genero
+
+    /**
+     * Obtém o nome do animal.
+     * 
+     * @returns O nome do animal.
+     */
+    public getNome(): string {
+        return this.nome;
+    }
+
+    /**
+     * Define o nome do animal.
+     * 
+     * @param nome O nome a ser atribuído ao animal.
+     */
+    public setNome(nome: string): void {
+        this.nome = nome;
+    }
+
+    /**
+     * Obtém a idade do animal.
+     * 
+     * @returns A idade do animal.
+     */
+    public getIdade(): number {
+        return this.idade;
+    }
+
+    /**
+     * Define a idade do animal.
+     * 
+     * @param idade A idade a ser atribuída ao animal.
+     */
+    public setIdade(idade: number): void {
+        this.idade = idade;
+    }
+
+    /**
+     * Obtém o gênero do animal.
+     * 
+     * @returns O gênero do animal.
+     */
+    public getGenero(): string {
+        return this.genero;
+    }
+
+    /**
+     * Define o gênero do animal.
+     * 
+     * @param genero O gênero a ser atribuído ao animal.
+     */
+    public setGenero(genero: string): void {
+        this.genero = genero;
+    }
+}
