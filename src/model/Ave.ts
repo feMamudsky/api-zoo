@@ -1,42 +1,90 @@
 import { Animal } from "./Animal";
+import { DatabaseModel } from "./DatabaseModel";
+
+const database = new DatabaseModel().pool;
 
 /**
- * Representa uma ave, uma subclasse de Animal.
+ * Representa uma ave no zoológico.
+ * Estende a classe Animal.
  */
 export class Ave extends Animal {
-    // 🦜 Aqui está a classe Ave, uma subclasse de Animal. Essas criaturas são conhecidas por suas asas e belos cantos!
-
-    private raca: string; // 🏷️ A raça da ave, porque mesmo entre as aves, cada uma tem suas peculiaridades!
+    
+    /**
+     * A envergadura da ave (em centímetros).
+     */
+    private envergadura: number;
 
     /**
      * Cria uma nova instância de Ave.
      * 
-     * @param raca A raça da ave.
-     * @param nome O nome da ave.
-     * @param idade A idade da ave.
-     * @param genero O gênero da ave.
+     * @param _nome O nome da ave.
+     * @param _idade A idade da ave.
+     * @param _genero O gênero da ave.
+     * @param _envergadura A envergadura da ave.
      */
-    constructor(raca: string, nome: string, idade: number, genero: string) {
-        super(nome, idade, genero); // 🌟 Chamamos o construtor da classe pai para configurar o nome, idade e gênero.
-
-        this.raca = raca; // 🏷️ Definimos a raça da ave. Elas vêm em todas as formas e tamanhos!
+    constructor(_nome: string,
+                _idade: number,
+                _genero: string,
+                _envergadura: number) {
+        // Chama o construtor da classe pai (Animal)
+        super(_nome, _idade, _genero);
+        // Atribui a envergadura fornecida ao atributo envergadura da ave
+        this.envergadura = _envergadura;
     }
 
     /**
-     * Obtém a raça da ave.
+     * Obtém a envergadura da ave.
      * 
-     * @returns A raça da ave.
+     * @returns A envergadura da ave.
      */
-    public getRaca(): string {
-        return this.raca; // 🤔 Retorna a raça da ave. Será que sou um papagaio ou um falcão?
+    public getEnvergadura(): number {
+        return this.envergadura;
     }
 
     /**
-     * Define a raça da ave.
+     * Define a envergadura da ave.
      * 
-     * @param raca A nova raça para a ave.
+     * @param _envergadura A envergadura a ser atribuída à ave.
      */
-    public setRaca(raca: string): void {
-        this.raca = raca; // 🏷️ Define uma nova raça para a ave. Talvez agora eu seja um flamingo!
+    public setEnvergadura(_envergadura: number): void {
+        this.envergadura = _envergadura;
+    }
+
+
+    static async listarAves() {
+        const listaDeAves: Array<Ave> = [];
+        try {
+            const queryReturn = await database.query(`SELECT * FROM ave;`);
+            queryReturn.rows.forEach(ave => {
+                listaDeAves.push(ave);
+            });
+
+            // só pra testar se a lista veio certa do banco
+            console.log(listaDeAves);
+
+            return listaDeAves;
+        } catch (error) {
+            console.log('Erro no modelo');
+            console.log(error);
+            return "error";
+        }
+    }
+
+    static async cadastrarAve(ave: Ave): Promise<any> {
+        try {
+            let insertResult = false;
+            await database.query(`INSERT INTO ave (nome, idade, genero, tipo_de_escamas)
+                VALUES
+                ('${ave.getNome().toUpperCase()}', ${ave.getIdade()}, '${ave.getGenero().toUpperCase()}', ${ave.getEnvergadura()});
+            `).then((result) => {
+                if(result.rowCount != 0) {
+                    insertResult = true;
+                }
+            });
+            return insertResult;
+        } catch(error) {
+            return error;
+        }
     }
 }
+

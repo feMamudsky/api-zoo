@@ -1,44 +1,112 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
+import { Habitat } from "./model/Habitat";
+import { Atracao } from "./model/Atracao";
+import { Zoologico } from "./model/Zoologico";
+import { DatabaseModel } from "./model/DatabaseModel";
+import { Reptil } from "./model/Reptil";
+import { Mamifero } from "./model/Mamifero";
+import { Ave } from "./model/Ave";
+import { getEnabledCategories } from "trace_events";
 
 const server = express();
-const port = 3000;
+const port: number = 3000;
 
 server.use(express.json());
 server.use(cors());
 
-server.get('/', (req,res) =>{
-    res.json('olá mundo');
-})
+server.get('/', (req, res) => {
+    res.json("ola");
+});
 
-server.listen(port, () => {
-    console.log(`Servidor estpa escutando no endereço http://localhost:${port}`);
-})
-
-import { Habitat } from "./model/Habitat";
-import { Atracao } from "./model/Atracao";
-import { Zoologico } from "./model/Zoologico";
-
-// Cria um habitat quando uma solicitação POST é feita para '/habitat'
 server.post('/habitat', (req, res) => {
-    const { nome, animais } = req.body; // 🏠🦁 Obtém o nome e os animais do corpo da solicitação
-    const habitat = new Habitat(nome, animais); // 🏞️✨ Cria um novo habitat com os dados recebidos
-    console.log(habitat); // 🤩 Exibe o habitat criado no console
-    res.status(200).json('Habitat criado'); // 🎉 Retorna uma resposta de sucesso
+    const { nome, animais } = req.body;
+    const habitat = new Habitat(nome, animais);
+    console.log(habitat);
+    res.status(200).json('Habitat criado');
 });
 
-// Cria uma atração quando uma solicitação POST é feita para '/atracao'
 server.post('/atracao', (req, res) => {
-    const { nome, habitat } = req.body; // 🎪🐘 Obtém o nome e o habitat do corpo da solicitação
-    const atracao = new Atracao(nome, habitat); // 🎠✨ Cria uma nova atração com os dados recebidos
-    console.log(atracao); // 🤹‍♂️ Exibe a atração criada no console
-    res.status(200).json('Atração criada'); // 🎈 Retorna uma resposta de sucesso
+    const { nome, habitat } = req.body;
+    const atracao = new Atracao(nome, habitat);
+    console.log(atracao);
+    res.status(200).json('Atração criada');
 });
 
-// Cria um zoológico quando uma solicitação POST é feita para '/zoologico'
 server.post('/zoologico', (req, res) => {
-    const { nome, atracao } = req.body; // 🏰🦒 Obtém o nome e a atração do corpo da solicitação
-    const zoo = new Zoologico(nome, atracao); // 🐼🌟 Cria um novo zoológico com os dados recebidos
-    console.log(zoo); // 🐾 Exibe o zoológico criado no console
-    res.status(200).json('Zoológico criado'); // 🏆 Retorna uma resposta de sucesso
+    const { nome, atracao } = req.body;
+    const zoo = new Zoologico(nome, atracao);
+    console.log(zoo);
+    res.status(200).json('Zoológico criado');
 });
+
+server.get('/list/reptil', async (req, res) => {
+    const repteis = await Reptil.listarRepteis();
+
+    res.status(200).json(repteis);
+})
+
+server.post('/new/reptil', async (req, res) => {
+    const { nome, idade, genero, tipo_de_escamas } = req.body;
+
+    const novoReptil = new Reptil(nome, idade, genero, tipo_de_escamas);
+
+    const result = await Reptil.cadastrarReptil(novoReptil);
+
+    if(result) {
+        return res.status(200).json('Reptil cadastrado com sucesso');
+    } else {
+        return res.status(400).json('Não foi possível cadastrar o réptil no banco de dados');
+    }
+    
+})
+
+server.get('/list/mamifero', async (req, res) => {
+    const mamifero = await Mamifero.listarMamiferos();
+
+    res.status(200).json(mamifero);
+})
+
+server.post('/new/mamifero', async (req, res) => {
+    const { nome, idade, genero, raca } = req.body;
+
+    const novoMamifero = new Mamifero(raca, nome, idade, genero);
+
+    const result = await Mamifero.cadastrarMamifero(novoMamifero);
+
+    if(result) {
+        return res.status(200).json('Mamifero cadastrado com sucesso');
+    } else {
+        return res.status(400).json('Não foi possível cadastrar o mamifero no banco de dados');
+    }
+})
+
+server.get('/list/ave', async (req, res) => {
+    const ave = await Ave.listarAves();
+
+    res.status(200).json(ave);
+})
+
+server.post('/new/ave', async (req, res) => {
+    const { nome, idade, genero, envergadura } = req.body;
+
+    const novaAve = new Ave(nome, idade, genero, envergadura);
+
+    const result = await Ave.cadastrarAve(novaAve);
+
+    if(result) {
+        return res.status(200).json('Ave cadastrado com sucesso');
+    } else {
+        return res.status(400).json('Não foi possível cadastrar o ave no banco de dados');
+    }
+})
+
+new DatabaseModel().testeConexao().then((resbd) => {
+    if(resbd) {
+        server.listen(port, () => {
+            console.log(`Servidor rodando em http://localhost:${port}`);
+        })
+    } else {
+        console.log('Não foi possível conectar ao banco de dados');
+    }
+})
